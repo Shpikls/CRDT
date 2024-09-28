@@ -9,9 +9,9 @@ class CRDTTextEditor {
         this.clientId = clientId;
     }
 
-    insert(char) {
+    insert(char, start) {
         const timestamp = new Date();
-        this.operation.push({ char, timestamp });
+        this.operation.push({ char, timestamp, start });
         console.log(`Inserted "${char}" with timestamp ${timestamp} by ${this.clientId}`);
     }
 
@@ -40,16 +40,12 @@ class CRDTTextEditor {
     }
 }
 
-const initText = 'He'
+const initText = 'Hello!'
 const editor1 = new CRDTTextEditor(initText, 'user1');
 const editor2 = new CRDTTextEditor(initText, 'user2');
 
-const sleep = (timeout) => new Promise((resolve) => {
-    setTimeout(() => resolve(), timeout);
-})
-
 async function test() {
-    editor1.insert('l');
+    editor1.insert('reader', 4);
     await sleep(20);
     editor2.insert('l');
     await sleep(20);
@@ -65,6 +61,12 @@ async function test() {
     editor2.sync(editor1.getOperation());
 
     console.log(editor2.getText());
+}
+
+function sleep(timeout) {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(), timeout);
+    })
 }
 
 test();
