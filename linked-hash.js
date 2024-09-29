@@ -3,8 +3,21 @@ const {v4: uuid} = require('uuid');
 class LinkedHash {
     linkedHash;
 
-    constructor() {
+    constructor(string) {
         this.linkedHash = {head: {next: null}};
+
+        if (typeof string === 'string') {
+            let pointer = 'head';
+
+            string.split('').forEach(char => {
+                const id = uuid();
+                this.linkedHash[pointer].next = id;
+                this.linkedHash[id] = { next: null, data: char};
+                pointer = id;
+            })
+        }
+
+        return this;
     }
 
     findTail(id = 'head') {
@@ -56,7 +69,7 @@ class LinkedHash {
     }
 }
 
-const linkedHash = new LinkedHash();
+const linkedHash = new LinkedHash('hello');
 console.log(linkedHash);
 linkedHash.push(2);
 linkedHash.push(3);
